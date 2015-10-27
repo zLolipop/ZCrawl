@@ -120,6 +120,33 @@ class Spider:
         # print year
         # print semester
 
+    def getTable(self, stuId, password):
+        """获取学生课表"""
+
+        def visitPersonalPage():
+            """访问学生个人课表页面"""
+            personalPageUrl = self.loginPage.url[:-28] + self.postDict[u'学生个人课表']
+            connection_header = deepcopy(self.connectionParament)
+            connection_header['Referer'] = self.loginPage.url  # 将Referer 置为登陆页面的url
+            tablePage = requests.get(personalPageUrl, headers=connection_header)
+            return tablePage
+
+        def visitRecommendPage():
+            """访问专业推荐课表"""
+            recommendPageUrl = self.loginPage.url[:-28] + self.postDict[u'专业推荐课表查询']
+            connection_header = deepcopy(self.connectionParament)
+            connection_header['Referer'] = self.loginPage.url  # 将Referer 置为登陆页面的url
+            tablePage = requests.get(recommendPageUrl, headers=connection_header)
+            return tablePage
+
+        def analyzeTable(html):
+            """从html解析出课表以DataFrame返回"""
+            tableSoup = BeautifulSoup(html)
+            # todo : finished the function
+
+        self.login(stuId, password)
+        page = visitPersonalPage()
+        html = page.text
 
 class DFOperation:
     def __init__(self):
@@ -132,5 +159,6 @@ class DFOperation:
 
 if __name__ == '__main__':
     test = Spider("110.65.10.233")
-    df = test.getGrade('201430552330', '3.1415926')
-    DFOperation.writeDB(df)
+    # df = test.getGrade('201430552330', '3.1415926')
+    # DFOperation.writeDB(df)
+    test.getTable('201430552330', '3.1415926')
