@@ -141,7 +141,6 @@ class Spider:
 
         def analyzeTable(html):
             """从html解析出课表以DataFrame返回"""
-
             def sift(tag):
                 return '<br/>' in str(tag) and tag.has_attr('align')
 
@@ -149,8 +148,11 @@ class Spider:
             bigTable = tableSoup.find('table', attrs={"id": "Table1"})
             for item in bigTable.find_all(sift):
                 while 'br' in str(item):
-                    item.br.replace_with('\t')
-                print item.get_text()
+                    item.br.replace_with('\n')
+                course = item.get_text().split('\n')
+                courseTime = course[1]
+                week = courseTime[:2] # 课在周几上
+                print courseTime
 
 
         self.login(stuId, password)
