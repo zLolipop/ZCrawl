@@ -141,12 +141,22 @@ class Spider:
 
         def analyzeTable(html):
             """从html解析出课表以DataFrame返回"""
+
+            def sift(tag):
+                return '<br/>' in str(tag) and tag.has_attr('align')
+
             tableSoup = BeautifulSoup(html)
-            # todo : finished the function
+            bigTable = tableSoup.find('table', attrs={"id": "Table1"})
+            for item in bigTable.find_all(sift):
+                while 'br' in str(item):
+                    item.br.replace_with('\t')
+                print item.get_text()
+
 
         self.login(stuId, password)
         page = visitPersonalPage()
         html = page.text
+        analyzeTable(html)
 
 class DFOperation:
     def __init__(self):
